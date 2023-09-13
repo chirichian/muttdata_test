@@ -1,0 +1,23 @@
+version: '3'
+
+
+
+services:
+  database-service:
+    image: "postgres" #latest official postgres version
+    env_file:
+      - ./database_mutt/database.env
+    volumes:
+      - ./database_mutt/init.sql:/docker-entrypoint-initdb.d/init.sql #create table each time we create docker
+      - database-data:/var/lib/postgresql/data #save data from tables
+    ports:
+      - "5432:5432"
+    networks: #let docker see each others in the same network
+      - app-tier
+    container_name: postgresql_service
+
+networks:
+  app-tier:
+    driver: bridge
+volumes:
+  database-data:
